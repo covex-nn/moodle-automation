@@ -1,0 +1,15 @@
+language: php
+
+php:
+   - 5.3
+
+before_script:
+   - wget http://getcomposer.org/composer.phar
+   - php -dmemory_limit=1G composer.phar update
+
+script:
+   - ant moodle-automation-init
+
+notifications:
+   email:
+      - covex.mobile@gmail.com
