@@ -1,0 +1,28 @@
+{
+  "name" : "covex-nn/moodle-automation", 
+  "description" : "Ant script for Moodle Package PHPUnit-testing automation", 
+  "type" : "library", 
+  "license": "MIT",
+  "require": {
+    "covex-nn/moodle-installer": ">=1.0", 
+    "moodle/moodle" : "2.4.3"
+  }, 
+  "repositories" : [
+    { "type" : "composer", "url" : "https://raw.github.com/covex-nn/moodle-installer/master" }
+  ], 
+  "authors": [
+    {
+      "name": "Andrey F. Mindubaev",
+      "email": "andrey.mindubaev@apnet.ru",
+      "homepage": "http://github.com/covex-nn"
+    }
+  ],
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  }, 
+  "config" : {
+    "bin-dir" : "bin"
+  }
+}

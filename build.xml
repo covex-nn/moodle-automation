@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="covex-nn/moodle-automation" default="moodle-automation-init" basedir=".">
+  <property name="system.php" value="php" />
+
+  <property name="mysql.schema" value="moodle2_travis" />
+  <property name="mysql.host" value="localhost" />
+  <property name="mysql.user" value="username" />
+  <property name="mysql.password" value="password" />
+  <property name="mysql.root.user" value="root" />
+  <property name="mysql.root.password" value="" />
+
+  <property name="lib.path.mysql" value="${basedir}/vendor/covex-nn/moodle-automation/ant-scripts/jars" />
+
+  <property name="moodle-automation-config" value="${basedir}/www/config.php" />
+  <property name="moodle-automation-moodledata" location="${basedir}/moodledata" />
+  <property name="moodle-automation-phpu-moodledata" location="${basedir}/phpu_moodledata" />
+
+  <import file="${lib.path.mysql}/mysql.ant" />
+  
+  <target name="moodle-automation-init" depends="mysql-drop,mysql-create,moodle-automation-config">
+    <exec executable="${system.php}" dir="${basedir}/www/admin/tool/phpunit/cli" failonerror="true">
+      <arg value="-d" />
+      <arg value="memory_limit=1024M" />
+      <arg value="init.php" />
+    </exec>
+
+    <echo message="${ant.project.name} Init - OK" />
+  </target>
+
+  <target name="moodle-automation-config" depends="mysql-check-connection,moodle-automation-moodledata">
+    <concat destfile="${moodle-automation-config}">
+      <fileset dir="${basedir}/www" includes="config-dist.php" />
+    </concat>
+
+   	<replaceregexp match="= 'pgsql';" replace="= 'mysqli';" flags="g" file="${moodle-automation-config}" />
+   	<replaceregexp match="= 'localhost';" replace="= '${mysql.host}';" flags="g" file="${moodle-automation-config}" />
+   	<replaceregexp match="= 'moodle';" replace="= '${mysql.schema}';" flags="g" file="${moodle-automation-config}" />
+   	<replaceregexp match="= 'username';" replace="= '${mysql.user}';" flags="g" file="${moodle-automation-config}" />
+   	<replaceregexp match="= 'password';" replace="= '${mysql.password}';" flags="g" file="${moodle-automation-config}" />
+
+   	<replaceregexp match="'/home/example/moodledata';" replace="dirname(__DIR__) . '/moodledata';" flags="g" file="${moodle-automation-config}" />
+   	<replaceregexp match="'/home/example/phpu_moodledata';" replace="dirname(__DIR__) . '/phpu_moodledata';" flags="g" file="${moodle-automation-config}" />
+
+   	<replaceregexp match="'http://example.com/moodle';" replace="'http://localhost';" flags="g" file="${moodle-automation-config}" />
+   	<replaceregexp match="CFG->phpunit_" replace="${line.separator}$CFG->phpunit_" flags="g" file="${moodle-automation-config}" />
+
+  </target>
+
+  <target name="moodle-automation-moodledata">
+    <delete includeemptydirs="true" verbose="false" failonerror="false">
+      <fileset dir="${moodle-automation-moodledata}" />
+    </delete>
+    <mkdir dir="${moodle-automation-moodledata}" />
+
+    <delete includeemptydirs="true" verbose="false" failonerror="false">
+      <fileset dir="${moodle-automation-phpu-moodledata}" />
+    </delete>
+    <mkdir dir="${moodle-automation-phpu-moodledata}" />
+  </target>
+
+</project>

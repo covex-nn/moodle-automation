@@ -1,0 +1,8 @@
+bin
+build
+build.local.properties
+composer.lock
+moodledata
+phpu_moodledata
+vendor
+www
