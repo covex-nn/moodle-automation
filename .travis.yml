@@ -5,10 +5,10 @@ php:
 
 before_script:
    - wget http://getcomposer.org/composer.phar
-   - php -dmemory_limit=1G composer.phar update
+   - php -dmemory_limit=1G composer.phar update --prefer-dist
 
 script:
-   - ant moodle-automation-init
+   - ant -Dlib.path.mysql=ant-scripts/jars moodle-automation-init
 
 notifications:
    email:
