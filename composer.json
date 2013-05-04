@@ -4,13 +4,12 @@
   "type" : "library", 
   "license": "MIT",
   "require": {
-    "covex-nn/moodle-installer": ">=1.0", 
-    "moodle/moodle" : "2.4.3.11", 
+    "covex-nn/moodle-version": "~2.4", 
     "phpunit/phpunit" : "~3.7", 
     "phpunit/dbunit" : "~1.2"
   }, 
   "repositories" : [
-    { "type" : "composer", "url" : "https://raw.github.com/covex-nn/moodle-installer/master" }
+    { "type" : "composer", "url" : "https://raw.github.com/covex-nn/moodle-version/master" }
   ], 
   "authors": [
     {

@@ -5,7 +5,7 @@ php:
 
 before_script:
    - wget http://getcomposer.org/composer.phar
-   - php -dmemory_limit=1G composer.phar update --prefer-dist
+   - php -dmemory_limit=1G composer.phar update --no-interaction
 
 script:
    - ant -Dlib.path.mysql=ant-scripts/jars moodle-automation-init
