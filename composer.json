@@ -5,7 +5,9 @@
   "license": "MIT",
   "require": {
     "covex-nn/moodle-installer": ">=1.0", 
-    "moodle/moodle" : "2.4.3"
+    "moodle/moodle" : "2.4.3.11", 
+    "phpunit/phpunit" : "~3.7", 
+    "phpunit/dbunit" : "~1.2"
   }, 
   "repositories" : [
     { "type" : "composer", "url" : "https://raw.github.com/covex-nn/moodle-installer/master" }
