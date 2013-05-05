@@ -3,8 +3,13 @@ language: php
 php:
    - 5.3
 
+env:
+   global:
+      - secure: "J2fogKRbn9PUduXchvwHAxZDtLWOAqjK6d77Gyr7SRJtygHpoFJSkSvSUam8\nLATUYJ6eE9N3divyQjbq184sajaMAm4BffUbO5rIwbBprACAxW9szJkvFY64\nGZoyBxc3CWRJZqRKgO8quRE8DjKNQ9gE/TWpaN3GKRyehk1cwfs="
+
 before_script:
    - wget http://getcomposer.org/composer.phar
+   - composer config github-oauth.github.com $GITHUB_OAUTH_TOKEN
    - php -dmemory_limit=1G composer.phar update --no-interaction
 
 script:
