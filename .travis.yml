@@ -8,7 +8,7 @@ before_script:
    - php -dmemory_limit=1G composer.phar update --no-interaction
 
 script:
-   - ant -Dlib.path.mysql=ant-scripts/jars moodle-automation-init
+   - ant -propertyfile build.dev.properties moodle-automation-init
 
 notifications:
    email:

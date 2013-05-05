@@ -3,6 +3,7 @@ build
 build.local.properties
 composer.lock
 moodledata
+nbproject
 phpu_moodledata
 vendor
 www

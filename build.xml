@@ -6,8 +6,6 @@
   <property name="mysql.host" value="localhost" />
   <property name="mysql.user" value="username" />
   <property name="mysql.password" value="password" />
-  <property name="mysql.root.user" value="root" />
-  <property name="mysql.root.password" value="" />
 
   <property name="lib.path.mysql" value="${basedir}/vendor/covex-nn/moodle-automation/ant-scripts/jars" />
 
@@ -17,7 +15,7 @@
 
   <import file="${lib.path.mysql}/mysql.ant" />
   
-  <target name="moodle-automation-init" depends="mysql-drop,mysql-create,moodle-automation-config,moodle-automation-fakevendor">
+  <target name="moodle-automation-init" depends="moodle-automation-database,moodle-automation-config">
     <exec executable="${system.php}" dir="${basedir}/www/admin/tool/phpunit/cli" failonerror="true">
       <arg value="-dmemory_limit=1024M" />
       <arg value="init.php" />
@@ -26,7 +24,15 @@
     <echo message="${ant.project.name} Init - OK" />
   </target>
 
-  <target name="moodle-automation-config" depends="mysql-check-connection,moodle-automation-moodledata">
+  <target name="moodle-automation-database" if="moodle.create-database">
+    <antcall target="mysql-drop" />
+    <antcall target="mysql-create" />
+  </target>
+
+  <target name="moodle-automation-config" if="moodle.create-config" depends="mysql-check-connection">
+    <antcall target="moodle-automation-moodledata" />
+    <antcall target="moodle-automation-fakevendor" />
+    
     <concat destfile="${moodle-automation-config}">
       <fileset dir="${basedir}/www" includes="config-dist.php" />
     </concat>
@@ -61,11 +67,6 @@
     <delete includeemptydirs="true" verbose="false" failonerror="false">
       <fileset dir="${basedir}/www/vendor" />
     </delete>
-<!--
-    <mkdir dir="${basedir}/www/vendor" />
-    <mkdir dir="${basedir}/www/vendor/phpunit" />
-    <mkdir dir="${basedir}/www/vendor/phpunit/phpunit/PHPUnit" />
--->
 
     <echo file="${basedir}/www/vendor/autoload.php">&lt;?php require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';</echo>
     <echo file="${basedir}/www/vendor/phpunit/phpunit/PHPUnit/Autoload.php">&lt;?php require_once dirname(dirname(__DIR__)) . '/../../vendor/phpunit/phpunit/PHPUnit/Autoload.php';</echo>
