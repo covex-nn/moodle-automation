@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="covex-nn/moodle-automation - dev" default="moodle-automation-init" basedir=".">
   <property file="build.local.properties" />
-  <property file="build.dev.properties" />
   <import file="build.xml" />
 </project>

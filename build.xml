@@ -19,6 +19,10 @@
   
   <target name="moodle-automation-init" depends="moodle-automation-database,moodle-automation-create-config,moodle-automation-create-vendor-autoload,moodle-automation-create-vendor-phpu-autoload" description="Initialize PHPUnit environment">
     <mkdir dir="${moodle-automation.moodledata}" />
+    
+    <delete includeemptydirs="true" verbose="false" failonerror="false">
+      <fileset dir="${moodle-automation.phpu-moodledata}" />
+    </delete>
     <mkdir dir="${moodle-automation.phpu-moodledata}" />
     
     <exec executable="${system.php}" dir="${basedir}/www/admin/tool/phpunit/cli" failonerror="true">
@@ -34,7 +38,7 @@
     <antcall target="mysql-create" />
 
     <delete includeemptydirs="true" verbose="false" failonerror="false">
-      <fileset dir="${moodle-automation.phpu-moodledata}" />
+      <fileset dir="${moodle-automation.moodledata}" />
     </delete>
   </target>
 
