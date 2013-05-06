@@ -11,7 +11,7 @@ class MoodleAutomationComposerTest extends PHPUnit_Framework_TestCase
   public function testComposerJson()
   {
     $composer = json_decode(
-      file_get_contents(dirname(__DIR__) . "/composer.json")
+      file_get_contents("composer.json")
     );
     
     $this->assertEquals(
@@ -28,7 +28,7 @@ class MoodleAutomationComposerTest extends PHPUnit_Framework_TestCase
     
     foreach ($modules as $folder => $vendorFolder) {
       $this->assertFileExists(
-        dirname(__DIR__) . "/" . $vendorFolder, 
+        $vendorFolder, 
         "composer.json: folder '$vendorFolder' for 'www/$folder' does not exists"
       );
     }
