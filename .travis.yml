@@ -9,7 +9,7 @@ env:
 
 before_script:
    - wget http://getcomposer.org/composer.phar
-   - composer config github-oauth.github.com $GITHUB_OAUTH_TOKEN
+   - php composer.phar config github-oauth.github.com $GITHUB_OAUTH_TOKEN
    - php -dmemory_limit=1G composer.phar update --no-interaction
 
 script:

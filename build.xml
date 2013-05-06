@@ -10,6 +10,7 @@
   <property name="lib.path.mysql" value="${basedir}/vendor/covex-nn/moodle-automation/ant-scripts/jars" />
 
   <property name="moodle-automation.config" value="${basedir}/www/config.php" />
+  <property name="moodle-automation.moodledata" location="${basedir}/moodledata" />
   <property name="moodle-automation.phpu-moodledata" location="${basedir}/phpu_moodledata" />
   <property name="moodle-automation.vendor-autoload" location="${basedir}/www/vendor/autoload.php" />
   <property name="moodle-automation.vendor-phpu-autoload" location="${basedir}/www/vendor/phpunit/phpunit/PHPUnit/Autoload.php" />
@@ -17,6 +18,7 @@
   <import file="${lib.path.mysql}/mysql.ant" />
   
   <target name="moodle-automation-init" depends="moodle-automation-database,moodle-automation-create-config,moodle-automation-create-vendor-autoload,moodle-automation-create-vendor-phpu-autoload" description="Initialize PHPUnit environment">
+    <mkdir dir="${moodle-automation.moodledata}" />
     <mkdir dir="${moodle-automation.phpu-moodledata}" />
     
     <exec executable="${system.php}" dir="${basedir}/www/admin/tool/phpunit/cli" failonerror="true">
