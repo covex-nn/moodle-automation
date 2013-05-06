@@ -36,7 +36,7 @@ class AllTests
     
     $suite->addTestSuite(
       self::_createSuite(
-        "Modules", "src/*/tests"
+        "Modules", "src/*/*/tests"
       )
     );
     
