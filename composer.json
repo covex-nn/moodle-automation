@@ -4,7 +4,7 @@
   "type" : "library", 
   "license": "MIT",
   "require": {
-    "covex-nn/moodle-version": "~2.4", 
+    "covex-nn/moodle-version": "*", 
     "phpunit/phpunit" : "~3.7", 
     "phpunit/dbunit" : "~1.2"
   }, 
