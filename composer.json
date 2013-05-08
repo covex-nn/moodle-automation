@@ -8,6 +8,9 @@
     "phpunit/phpunit" : "~3.7", 
     "phpunit/dbunit" : "~1.2"
   }, 
+  "suggest": {
+    "covex-nn/phpqatools": "Provides standard PHP QA Tools"
+  }, 
   "authors": [
     {
       "name": "Andrey F. Mindubaev",
