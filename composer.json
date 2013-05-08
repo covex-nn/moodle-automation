@@ -8,9 +8,6 @@
     "phpunit/phpunit" : "~3.7", 
     "phpunit/dbunit" : "~1.2"
   }, 
-  "repositories" : [
-    { "type" : "composer", "url" : "https://raw.github.com/covex-nn/moodle-version/master" }
-  ], 
   "authors": [
     {
       "name": "Andrey F. Mindubaev",
