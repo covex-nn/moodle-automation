@@ -13,4 +13,4 @@ before_script:
    - php -dmemory_limit=1G composer.phar update --no-interaction
 
 script:
-   - ant -Dlib.path.mysql=ant-scripts/jars -Dmysql.root.user=root -Dmysql.root.password="" -Dmoodle.create-database=1 moodle-automation-init
+   - ant -Dlib.path.mysql=ant-scripts/mysql -Dmysql.root.user=root -Dmysql.root.password="" -Dmoodle.create-database=1 moodle-automation-init
