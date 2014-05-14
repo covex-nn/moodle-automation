@@ -1,30 +1,29 @@
 {
-  "name" : "covex-nn/moodle-automation", 
-  "description" : "Ant script for Moodle Package PHPUnit-testing automation", 
-  "type" : "library", 
-  "license": "MIT",
-  "require": {
-    "covex-nn/moodle-version": "*", 
-    "phpunit/phpunit" : "~3.7", 
-    "phpunit/dbunit" : "~1.2"
-  }, 
-  "suggest": {
-    "covex-nn/phpqatools": "Provides standard PHP QA Tools"
-  }, 
-  "authors": [
-    {
-      "name": "Andrey F. Mindubaev",
-      "email": "andrey.mindubaev@apnet.ru",
-      "homepage": "http://github.com/covex-nn"
+    "name" : "covex-nn/moodle-automation",
+    "description" : "Ant script for Moodle Package PHPUnit-testing automation",
+    "type" : "library",
+    "license": "MIT",
+    "require": {
+        "covex-nn/moodle-version": "*",
+        "phpunit/phpunit" : "*"
+    },
+    "suggest": {
+        "covex-nn/phpqatools": "Provides standard PHP QA Tools"
+    },
+    "authors": [
+        {
+            "name": "Andrey F. Mindubaev",
+            "email": "andrey.mindubaev@apnet.ru",
+            "homepage": "http://github.com/covex-nn"
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "config": {
+        "bin-dir" : "bin",
+        "moodle-dir" : "web"
     }
-  ],
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
-  }, 
-  "config": {
-    "bin-dir" : "bin",
-    "moodle-dir" : "web"
-  }
 }
