@@ -1,84 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="covex-nn/moodle-automation" default="moodle-automation-init" basedir=".">
-  <property name="system.php" value="php" />
+    <property name="system.php" value="php" />
 
-  <property name="mysql.schema" value="moodle2_travis" />
-  <property name="mysql.host" value="localhost" />
-  <property name="mysql.user" value="username" />
-  <property name="mysql.password" value="password" />
+    <property name="mysql.schema" value="moodle2_travis" />
+    <property name="mysql.host" value="localhost" />
+    <property name="mysql.user" value="username" />
+    <property name="mysql.password" value="password" />
 
-  <property name="lib.path.mysql" value="${basedir}/vendor/covex-nn/moodle-automation/ant-scripts/jars" />
+    <property name="lib.path.mysql" value="${basedir}/vendor/covex-nn/moodle-automation/ant-scripts/mysql" />
 
-  <property name="moodle-dir" value="web" />
+    <property name="moodle-dir" value="web" />
+    <property name="moodle-automation.admin-name" value="admin" />
+    <property name="moodle-automation.admin-password" value="automation" />
 
-  <property name="moodle-automation.config" value="${basedir}/${moodle-dir}/config.php" />
-  <property name="moodle-automation.moodledata" location="${basedir}/moodledata" />
-  <property name="moodle-automation.phpu-moodledata" location="${basedir}/phpu_moodledata" />
-  <property name="moodle-automation.vendor-autoload" location="${basedir}/${moodle-dir}/vendor/autoload.php" />
-  <property name="moodle-automation.vendor-phpu-autoload" location="${basedir}/${moodle-dir}/vendor/phpunit/phpunit/PHPUnit/Autoload.php" />
+    <property name="moodle-automation.dirroot" value="${basedir}/${moodle-dir}" />
+    <property name="moodle-automation.config" value="${moodle-automation.dirroot}/config.php" />
+    <property name="moodle-automation.moodledata" location="${basedir}/moodledata" />
+    <property name="moodle-automation.phpu-moodledata" location="${basedir}/phpu_moodledata" />
+    <property name="moodle-automation.vendor-autoload" location="${moodle-automation.dirroot}/vendor/autoload.php" />
+    <property name="moodle-automation.vendor-phpu-autoload" location="${moodle-automation.dirroot}/vendor/phpunit/phpunit/PHPUnit/Autoload.php" />
 
-  <import file="${lib.path.mysql}/mysql.ant" />
-  
-  <target name="moodle-automation-init" depends="moodle-automation-database,moodle-automation-create-config,moodle-automation-create-vendor-autoload,moodle-automation-create-vendor-phpu-autoload" description="Initialize PHPUnit environment">
-    <mkdir dir="${moodle-automation.moodledata}" />
-    
-    <delete includeemptydirs="true" verbose="false" failonerror="false">
-      <fileset dir="${moodle-automation.phpu-moodledata}" />
-    </delete>
-    <mkdir dir="${moodle-automation.phpu-moodledata}" />
-    
-    <exec executable="${system.php}" dir="${basedir}/${moodle-dir}/admin/tool/phpunit/cli" failonerror="true">
-      <arg value="-dmemory_limit=1024M" />
-      <arg value="init.php" />
-    </exec>
+    <import file="${lib.path.mysql}/mysql.ant" />
 
-    <echo message="${ant.project.name} init - OK" />
-  </target>
+    <target name="moodle-automation-install" depends="moodle-automation-check-config" unless="moodle-automation.config.exists" description="Install Moodle">
+        <fail unless="moodle.wwwroot">'moodle.wwwroot' property must be set</fail>
+        <antcall target="moodle-automation-database" />
 
-  <target name="moodle-automation-database" if="moodle.create-database">
-    <antcall target="mysql-drop" />
-    <antcall target="mysql-create" />
+        <exec executable="${system.php}" failonerror="true">
+            <arg value="${moodle-automation.dirroot}/admin/cli/install.php" />
 
-    <delete includeemptydirs="true" verbose="false" failonerror="false">
-      <fileset dir="${moodle-automation.moodledata}" />
-    </delete>
-  </target>
+            <arg value="--chmod=2777" />
+            <arg value="--lang=en" />
+            <arg value="--wwwroot=${moodle.wwwroot}" />
+            <arg value="--dataroot=${moodle-automation.moodledata}" />
+            <arg value="--dbtype=mysqli" />
+            <arg value="--dbhost=${mysql.host}" />
+            <arg value="--dbname=${mysql.schema}" />
+            <arg value="--dbuser=${mysql.user}" />
+            <arg value="--dbpass=${mysql.password}" />
+            <arg value="--dbsocket=false" />
+            <arg value="--prefix=mdl_" />
+            <arg value="--fullname=Moodle-Dev" />
+            <arg value="--shortname=MD" />
+            <arg value="--adminuser=${moodle-automation.admin-name}" />
+            <arg value="--adminpass=${moodle-automation.admin-password}" />
+            <arg value="--non-interactive=true" />
+            <arg value="--agree-license=true" />
+            <arg value="--allow-unstable=false" />
+        </exec>
+    </target>
 
-  <target name="moodle-automation-create-config" depends="moodle-automation-check-config" unless="moodle-automation.config.exists">
-    <concat destfile="${moodle-automation.config}">
-      <fileset dir="${basedir}/${moodle-dir}" includes="config-dist.php" />
-    </concat>
+    <target name="moodle-automation-init" depends="moodle-automation-database,moodle-automation-create-config,moodle-automation-create-vendor-autoload,moodle-automation-create-vendor-phpu-autoload" description="Initialize PHPUnit environment">
+        <mkdir dir="${moodle-automation.moodledata}" />
 
-   	<replaceregexp match="= 'pgsql';" replace="= 'mysqli';" flags="g" file="${moodle-automation.config}" />
-   	<replaceregexp match="= 'localhost';" replace="= '${mysql.host}';" flags="g" file="${moodle-automation.config}" />
-   	<replaceregexp match="= 'moodle';" replace="= '${mysql.schema}';" flags="g" file="${moodle-automation.config}" />
-   	<replaceregexp match="= 'username';" replace="= '${mysql.user}';" flags="g" file="${moodle-automation.config}" />
-   	<replaceregexp match="= 'password';" replace="= '${mysql.password}';" flags="g" file="${moodle-automation.config}" />
+        <delete includeemptydirs="true" verbose="false" failonerror="false">
+            <fileset dir="${moodle-automation.phpu-moodledata}" />
+        </delete>
+        <mkdir dir="${moodle-automation.phpu-moodledata}" />
 
-   	<replaceregexp match="'/home/example/moodledata';" replace="dirname(__DIR__) . '/moodledata';" flags="g" file="${moodle-automation.config}" />
-   	<replaceregexp match="'/home/example/phpu_moodledata';" replace="dirname(__DIR__) . '/phpu_moodledata';" flags="g" file="${moodle-automation.config}" />
+        <exec executable="${system.php}" dir="${moodle-automation.dirroot}/admin/tool/phpunit/cli" failonerror="true">
+            <arg value="-dmemory_limit=1024M" />
+            <arg value="init.php" />
+        </exec>
 
-   	<replaceregexp match="'http://example.com/moodle';" replace="'http://localhost';" flags="g" file="${moodle-automation.config}" />
-   	<replaceregexp match="CFG->phpunit_" replace="${line.separator}$CFG->phpunit_" flags="g" file="${moodle-automation.config}" />
-  </target>
+        <echo message="${ant.project.name} init - OK" />
+    </target>
 
-  <target name="moodle-automation-check-config">
-    <available file="${moodle-automation.config}" property="moodle-automation.config.exists" />
-  </target>
+    <target name="moodle-automation-database" if="moodle.create-database">
+        <antcall target="mysql-drop" />
+        <antcall target="mysql-create" />
 
-  <target name="moodle-automation-create-vendor-autoload" depends="moodle-automation-check-vendor-autoload" unless="moodle-automation.vendor-autoload.exists">
-    <echo file="${moodle-automation.vendor-autoload}">&lt;?php require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';</echo>
-  </target>
-  
-  <target name="moodle-automation-check-vendor-autoload">
-    <available file="${moodle-automation.vendor-autoload}" property="moodle-automation.vendor-autoload.exists" />
-  </target>
+        <delete includeemptydirs="true" verbose="false" failonerror="false">
+            <fileset dir="${moodle-automation.moodledata}" />
+        </delete>
+    </target>
 
-  <target name="moodle-automation-create-vendor-phpu-autoload" depends="moodle-automation-check-vendor-phpu-autoload" unless="moodle-automation.vendor-phpu-autoload.exists">
-    <echo file="${moodle-automation.vendor-phpu-autoload}">&lt;?php require_once dirname(dirname(__DIR__)) . '/../../vendor/phpunit/phpunit/PHPUnit/Autoload.php';</echo>
-  </target>
-  
-  <target name="moodle-automation-check-vendor-phpu-autoload">
-    <available file="${moodle-automation.vendor-phpu-autoload}" property="moodle-automation.vendor-phpu-autoload.exists" />
-  </target>
+    <target name="moodle-automation-create-config" depends="moodle-automation-check-config" unless="moodle-automation.config.exists">
+        <concat destfile="${moodle-automation.config}">
+            <fileset dir="${moodle-automation.dirroot}" includes="config-dist.php" />
+        </concat>
+
+        <replaceregexp match="= 'pgsql';" replace="= 'mysqli';" flags="g" file="${moodle-automation.config}" />
+        <replaceregexp match="= 'localhost';" replace="= '${mysql.host}';" flags="g" file="${moodle-automation.config}" />
+        <replaceregexp match="= 'moodle';" replace="= '${mysql.schema}';" flags="g" file="${moodle-automation.config}" />
+        <replaceregexp match="= 'username';" replace="= '${mysql.user}';" flags="g" file="${moodle-automation.config}" />
+        <replaceregexp match="= 'password';" replace="= '${mysql.password}';" flags="g" file="${moodle-automation.config}" />
+
+        <replaceregexp match="'/home/example/moodledata';" replace="dirname(__DIR__) . '/moodledata';" flags="g" file="${moodle-automation.config}" />
+        <replaceregexp match="'/home/example/phpu_moodledata';" replace="dirname(__DIR__) . '/phpu_moodledata';" flags="g" file="${moodle-automation.config}" />
+
+        <replaceregexp match="'http://example.com/moodle';" replace="'http://localhost';" flags="g" file="${moodle-automation.config}" />
+        <replaceregexp match="CFG->phpunit_" replace="${line.separator}$CFG->phpunit_" flags="g" file="${moodle-automation.config}" />
+    </target>
+
+    <target name="moodle-automation-check-config">
+        <available file="${moodle-automation.config}" property="moodle-automation.config.exists" />
+    </target>
+
+    <target name="moodle-automation-create-vendor-autoload" depends="moodle-automation-check-vendor-autoload" unless="moodle-automation.vendor-autoload.exists">
+        <echo file="${moodle-automation.vendor-autoload}">&lt;?php require_once dirname(dirname(__DIR__)) . '/vendor/autoload.php';</echo>
+    </target>
+
+    <target name="moodle-automation-check-vendor-autoload">
+        <available file="${moodle-automation.vendor-autoload}" property="moodle-automation.vendor-autoload.exists" />
+    </target>
+
+    <target name="moodle-automation-create-vendor-phpu-autoload" depends="moodle-automation-check-vendor-phpu-autoload" unless="moodle-automation.vendor-phpu-autoload.exists">
+        <echo file="${moodle-automation.vendor-phpu-autoload}">&lt;?php require_once dirname(dirname(__DIR__)) . '/../../vendor/phpunit/phpunit/PHPUnit/Autoload.php';</echo>
+    </target>
+
+    <target name="moodle-automation-check-vendor-phpu-autoload">
+        <available file="${moodle-automation.vendor-phpu-autoload}" property="moodle-automation.vendor-phpu-autoload.exists" />
+    </target>
 </project>
