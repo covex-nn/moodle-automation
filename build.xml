@@ -9,11 +9,13 @@
 
   <property name="lib.path.mysql" value="${basedir}/vendor/covex-nn/moodle-automation/ant-scripts/jars" />
 
-  <property name="moodle-automation.config" value="${basedir}/www/config.php" />
+  <property name="moodle-dir" value="web" />
+
+  <property name="moodle-automation.config" value="${basedir}/${moodle-dir}/config.php" />
   <property name="moodle-automation.moodledata" location="${basedir}/moodledata" />
   <property name="moodle-automation.phpu-moodledata" location="${basedir}/phpu_moodledata" />
-  <property name="moodle-automation.vendor-autoload" location="${basedir}/www/vendor/autoload.php" />
-  <property name="moodle-automation.vendor-phpu-autoload" location="${basedir}/www/vendor/phpunit/phpunit/PHPUnit/Autoload.php" />
+  <property name="moodle-automation.vendor-autoload" location="${basedir}/${moodle-dir}/vendor/autoload.php" />
+  <property name="moodle-automation.vendor-phpu-autoload" location="${basedir}/${moodle-dir}/vendor/phpunit/phpunit/PHPUnit/Autoload.php" />
 
   <import file="${lib.path.mysql}/mysql.ant" />
   
@@ -25,7 +27,7 @@
     </delete>
     <mkdir dir="${moodle-automation.phpu-moodledata}" />
     
-    <exec executable="${system.php}" dir="${basedir}/www/admin/tool/phpunit/cli" failonerror="true">
+    <exec executable="${system.php}" dir="${basedir}/${moodle-dir}/admin/tool/phpunit/cli" failonerror="true">
       <arg value="-dmemory_limit=1024M" />
       <arg value="init.php" />
     </exec>
@@ -44,7 +46,7 @@
 
   <target name="moodle-automation-create-config" depends="moodle-automation-check-config" unless="moodle-automation.config.exists">
     <concat destfile="${moodle-automation.config}">
-      <fileset dir="${basedir}/www" includes="config-dist.php" />
+      <fileset dir="${basedir}/${moodle-dir}" includes="config-dist.php" />
     </concat>
 
    	<replaceregexp match="= 'pgsql';" replace="= 'mysqli';" flags="g" file="${moodle-automation.config}" />

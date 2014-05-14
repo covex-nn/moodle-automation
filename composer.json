@@ -24,8 +24,7 @@
     }
   }, 
   "config": {
-    "bin-dir" : "bin", 
-    "github-oauth" : {
-    }
+    "bin-dir" : "bin",
+    "moodle-dir" : "web"
   }
 }
