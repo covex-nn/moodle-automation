@@ -5,7 +5,8 @@
     "license": "MIT",
     "require": {
         "covex-nn/moodle-version": "*",
-        "phpunit/phpunit" : "*"
+        "phpunit/phpunit" : "3.7.*",
+        "phpunit/dbunit" : "1.2.*"
     },
     "suggest": {
         "covex-nn/phpqatools": "Provides standard PHP QA Tools"
